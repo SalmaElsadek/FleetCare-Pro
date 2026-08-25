@@ -1,0 +1,166 @@
+﻿@model ServiceFormViewModel
+@{
+    ViewData["Title"] = "Add Service Record";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-10">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Add New Service Record (Master-Detail)</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row">
+                        <div class="col-md-4 form-group mb-3">
+                            <label asp-for="VehicleId" class="control-label">Vehicle (License Plate)</label>
+                            <select asp-for="VehicleId" class="form-control" asp-items="ViewBag.Vehicles">
+                                <option value="">-- Select Vehicle --</option>
+                            </select>
+                            <span asp-validation-for="VehicleId" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4 form-group mb-3">
+                            <label asp-for="ServiceCenterId" class="control-label">Service Center</label>
+                            <select asp-for="ServiceCenterId" class="form-control" asp-items="ViewBag.ServiceCenters">
+                                <option value="">-- Select Center --</option>
+                            </select>
+                            <span asp-validation-for="ServiceCenterId" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4 form-group mb-3">
+                            <label asp-for="ServiceDate" class="control-label"></label>
+                            <input asp-for="ServiceDate" class="form-control" type="date" />
+                            <span asp-validation-for="ServiceDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 form-group mb-3">
+                            <label asp-for="CurrentMileage" class="control-label"></label>
+                            <input asp-for="CurrentMileage" class="form-control" />
+                            <span asp-validation-for="CurrentMileage" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-8 form-group mb-3">
+                            <label asp-for="Notes" class="control-label"></label>
+                            <input asp-for="Notes" class="form-control" />
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4 form-group mb-3">
+                            <label asp-for="InvoiceFile" class="control-label">Invoice Document (PDF, JPG, PNG)</label>
+                            <input asp-for="InvoiceFile" class="form-control" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                            <span asp-validation-for="InvoiceFile" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <!-- (Details / Line Items) -->
+                    <h5 class="mb-3 text-secondary">Service Items & Parts</h5>
+                    
+                    <table class="table table-bordered" id="itemsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Cost</th>
+                                <th style="width: 80px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsContainer">
+                            @if (Model != null && Model.ServiceLineItems != null)
+                            {
+                                @for (int i = 0; i < Model.ServiceLineItems.Count; i++)
+                                {
+                                    <tr>
+                                        <td>
+                                            <select asp-for="ServiceLineItems[i].ServiceCategoryId" class="form-control"
+                                                    asp-items="@(ViewBag.ServiceCategories != null ? new SelectList(ViewBag.ServiceCategories, "Id", "CategoryName") : null)">
+                                                <option value="">-- Select Category --</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input asp-for="ServiceLineItems[i].Description" class="form-control" placeholder="e.g. Oil Change" />
+                                        </td>
+                                        <td>
+                                            <input asp-for="ServiceLineItems[i].Cost" class="form-control" placeholder="0.00" />
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                    <button type="button" id="addRow" class="btn btn-success btn-sm mb-3">+ Add Item</button>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">Save Service Record</button>
+                        <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        // كود جافاسكريبت بسيط لإضافة صف جديد ديناميكياً
+        let rowIndex = @Model.ServiceLineItems.Count;
+
+        document.getElementById('addRow').addEventListener('click', function () {
+            let container = document.getElementById('itemsContainer');
+
+            let categoryOptions = '<option value="">-- Select Category --</option>';
+            @if (ViewBag.ServiceCategories != null)
+            {
+                foreach (var cat in (IEnumerable<FleetCare_Pro.Models.ServiceCategory>)ViewBag.ServiceCategories)
+                {
+                           <text>categoryOptions += '<option value="@cat.Id">@cat.CategoryName</option>';</text>
+                }
+            }
+
+            let newRow = `
+                <tr>
+                    <td>
+                        <select name="ServiceLineItems[${rowIndex}].ServiceCategoryId" class="form-control">
+                            ${categoryOptions}
+                        </select>
+                    </td>
+                    <td>
+                        <input name="ServiceLineItems[${rowIndex}].Description" class="form-control" placeholder="Description" />
+                    </td>
+                    <td>
+                        <input name="ServiceLineItems[${rowIndex}].Cost" class="form-control" placeholder="0.00" />
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
+                    </td>
+                </tr>
+            `;
+            container.insertAdjacentHTML('beforeend', newRow);
+            rowIndex++;
+        });
+
+        // row deleted
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('remove-row')) {
+                let row = e.target.closest('tr');
+                if (document.querySelectorAll('#itemsContainer tr').length > 1) {
+                    row.remove();
+                } else {
+                    alert("At least one service item is required.");
+                }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,34 @@
+﻿@model FleetCare_Pro.Models.Vehicle
+
+<div class="card shadow-sm h-100 border-0">
+    @if (!string.IsNullOrEmpty(Model.VehicleImageURL))
+    {
+        <img src="~/uploads/vehicles/@Model.VehicleImageURL" class="card-img-top" alt="Vehicle Image" style="height: 180px; object-fit: cover;" />
+    }
+    else
+    {
+        <img src="https://via.placeholder.com/300x180?text=No+Image" class="card-img-top" alt="No Image" style="height: 180px; object-fit: cover;" />
+    }
+
+    <div class="card-body d-flex flex-column">
+        <h5 class="card-title text-primary fw-bold">@Model.LicensePlate</h5>
+        <p class="card-text mb-1 text-secondary"><strong>Make/Model:</strong> @Model.Make @Model.Model (@Model.Year)</p>
+        <p class="card-text mb-1 text-secondary"><strong>VIN:</strong> @Model.VIN</p>
+        <p class="card-text mb-3">
+            <strong>Status:</strong>
+            <span class="badge @(Model.Status.ToString() == "Active" ? "bg-success" : (Model.Status.ToString() == "InService" ? "bg-info text-dark" : "bg-warning text-dark"))">@Model.Status</span>
+        </p>
+
+       
+        <div class="d-flex justify-content-between mb-2">
+            <a asp-controller="Vehicle" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary w-50 me-1">Details</a>
+            <a asp-controller="ServiceRecords" asp-action="Create" asp-route-vehicleId="@Model.Id" class="btn btn-sm btn-outline-success w-50 ms-1">Add Service</a>
+        </div>
+
+     
+        <div class="d-flex justify-content-between mt-auto pt-2 border-top">
+            <a asp-controller="Vehicle" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-warning text-dark w-50 me-1">Edit</a>
+            <a asp-controller="Vehicle" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-danger w-50 ms-1">Delete</a>
+        </div>
+    </div>
+</div>

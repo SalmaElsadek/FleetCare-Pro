@@ -1,0 +1,98 @@
+﻿@model ServiceRecord
+@{
+    ViewData["Title"] = "Service Record Details";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Service Record Details (#@Model.Id)</h4>
+            <a asp-action="Index" class="btn btn-light btn-sm">Back to List</a>
+        </div>
+        <div class="card-body"> 
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <strong>Vehicle (License Plate):</strong>
+                    <p class="text-muted">@(Model.Vehicle != null ? Model.Vehicle.LicensePlate : "N/A")</p>
+                </div>
+                <div class="col-md-3">
+                    <strong>Service Center:</strong>
+                    <p class="text-muted">@(Model.ServiceCenter != null ? Model.ServiceCenter.Name : "N/A")</p>
+                </div>
+                <div class="col-md-3">
+                    <strong>Service Date:</strong>
+                    <p class="text-muted">@Model.ServiceDate.ToString("yyyy-MM-dd")</p>
+                </div>
+                <div class="col-md-3">
+                    <strong>Current Mileage:</strong>
+                    <p class="text-muted">@Model.CurrentMileage KM</p>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <strong>Total Cost:</strong>
+                    <p class="text-success fw-bold fs-5">$@Model.TotalCost.ToString("N2")</p>
+                </div>
+                <div class="col-md-3">
+                    <strong>Status:</strong>
+                    <p><span class="badge bg-info text-dark">@Model.Status</span></p>
+                </div>
+                <div class="col-md-6">
+                    <strong>Invoice Document:</strong>
+                    <p>
+                        @if (!string.IsNullOrEmpty(Model.InvoiceDocumentPath))
+                        {
+                            <a href="@Model.InvoiceDocumentPath" target="_blank" class="btn btn-sm btn-outline-primary">View / Download Invoice</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No document attached</span>
+                        }
+                    </p>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <strong>Notes:</strong>
+                    <p class="text-muted">@(string.IsNullOrEmpty(Model.Notes) ? "No notes added." : Model.Notes)</p>
+                </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <!-- (Line Items Details) -->
+            <h5 class="mb-3 text-secondary">Service Items & Parts Breakdown</h5>
+
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ServiceLineItems != null && Model.ServiceLineItems.Any())
+                    {
+                        foreach (var item in Model.ServiceLineItems)
+                        {
+                            <tr>
+                                <td>@(item.ServiceCategory != null ? item.ServiceCategory.CategoryName : "N/A")</td>
+                                <td>@item.Description</td>
+                                <td class="fw-bold">$@item.Cost.ToString("N2")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">No items found for this record.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

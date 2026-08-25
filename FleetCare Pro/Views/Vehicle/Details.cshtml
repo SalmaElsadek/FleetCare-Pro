@@ -1,0 +1,63 @@
+﻿@model Vehicle
+@{
+    ViewData["Title"] = "Vehicle Details";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-info text-dark d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Vehicle Details</h4>
+                <span class="badge bg-dark">@Model.Status</span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3">
+                        @if (!string.IsNullOrEmpty(Model.VehicleImageURL))
+                        {
+                            <img src="~/uploads/vehicles/@Model.VehicleImageURL" alt="Vehicle Image" class="img-fluid rounded shadow" style="max-height: 200px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="p-4 bg-light text-muted rounded border">No Image Available</div>
+                        }
+                    </div>
+
+                    <div class="col-md-8">
+                        <table class="table table-striped">
+                            <tr>
+                                <th style="width: 35%;">VIN:</th>
+                                <td>@Model.VIN</td>
+                            </tr>
+                            <tr>
+                                <th>License Plate:</th>
+                                <td><span class="badge bg-secondary">@Model.LicensePlate</span></td>
+                            </tr>
+                            <tr>
+                                <th>Make & Model:</th>
+                                <td>@Model.Make @Model.Model (@Model.Year)</td>
+                            </tr>
+                            <tr>
+                                <th>Purchase Price:</th>
+                                <td>$@Model.PurchasePrice.ToString("N2")</td>
+                            </tr>
+                            <tr>
+                                <th>Mileage:</th>
+                                <td>@Model.Mileage KM</td>
+                            </tr>
+                            <tr>
+                                <th>Assigned Driver:</th>
+                                <td>@(Model.Driver != null ? Model.Driver.FullName : "Unassigned")</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Vehicle</a>
+                    <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

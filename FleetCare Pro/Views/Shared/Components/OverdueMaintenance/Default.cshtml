@@ -1,0 +1,32 @@
+﻿@model IEnumerable<FleetCare_Pro.Models.Vehicle>
+
+<div class="card shadow-sm border-0 h-100">
+    <div class="card-header bg-warning bg-opacity-20 text-dark border-0 py-3">
+        <h5 class="mb-0 fw-semibold" style="font-size: 1rem;">
+            ⚠️ Overdue Maintenance <span class="badge bg-warning text-dark ms-1">@(Model?.Count() ?? 0)</span>
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        @if (Model != null && Model.Any())
+        {
+            <ul class="list-group list-group-flush">
+                @foreach (var vehicle in Model)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3 px-3">
+                        <div>
+                            <span class="fw-bold text-dark">@vehicle.LicensePlate</span>
+                            <div class="text-muted small">@vehicle.Make @vehicle.Model (@vehicle.Year)</div>
+                        </div>
+                        <a asp-controller="ServiceRecords" asp-action="Create" class="btn btn-sm btn-outline-danger px-3">Schedule</a>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <div class="text-center py-4 px-3">
+                <p class="text-success mb-0 fw-medium">✨ Excellent! All vehicles have up-to-date maintenance records.</p>
+            </div>
+        }
+    </div>
+</div>

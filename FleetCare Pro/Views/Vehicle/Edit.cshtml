@@ -1,0 +1,103 @@
+﻿@model VehicleFormViewModel
+@{
+    ViewData["Title"] = "Edit Vehicle";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0">Edit Vehicle Data</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" enctype="multipart/form-data" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ExistingImageURL" />
+
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label asp-for="VIN" class="control-label"></label>
+                            <input asp-for="VIN" class="form-control" />
+                            <span asp-validation-for="VIN" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label asp-for="LicensePlate" class="control-label"></label>
+                            <input asp-for="LicensePlate" class="form-control" />
+                            <span asp-validation-for="LicensePlate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 form-group mb-3">
+                            <label asp-for="Make" class="control-label"></label>
+                            <input asp-for="Make" class="form-control" />
+                            <span asp-validation-for="Make" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 form-group mb-3">
+                            <label asp-for="Model" class="control-label"></label>
+                            <input asp-for="Model" class="form-control" />
+                            <span asp-validation-for="Model" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 form-group mb-3">
+                            <label asp-for="Year" class="control-label"></label>
+                            <input asp-for="Year" class="form-control" />
+                            <span asp-validation-for="Year" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 form-group mb-3">
+                            <label asp-for="PurchasePrice" class="control-label"></label>
+                            <input asp-for="PurchasePrice" class="form-control" />
+                            <span asp-validation-for="PurchasePrice" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 form-group mb-3">
+                            <label asp-for="Mileage" class="control-label"></label>
+                            <input asp-for="Mileage" class="form-control" />
+                            <span asp-validation-for="Mileage" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 form-group mb-3">
+                            <label asp-for="Status" class="control-label"></label>
+                            <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<FleetCare_Pro.Models.VehicleStatus>()">
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label asp-for="DriverId" class="control-label">Assign Driver</label>
+                            <select asp-for="DriverId" class="form-control" asp-items="ViewBag.Drivers">
+                                <option value="">-- Select a Driver --</option>
+                            </select>
+                            <span asp-validation-for="DriverId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label asp-for="VehicleImage" class="control-label">Update Image (Optional)</label>
+                            <input asp-for="VehicleImage" type="file" class="form-control" accept="image/*" />
+                            <span class="text-muted small">Leave empty to keep the current image.</span>
+
+                            @if (!string.IsNullOrEmpty(Model.ExistingImageURL))
+                            {
+                                <div class="mt-2">
+                                    <img src="~/uploads/vehicle/@Model.ExistingImageURL" alt="Current Image" class="img-thumbnail" style="max-height: 100px;" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-warning">Update Vehicle</button>
+                        <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
